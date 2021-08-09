@@ -139,7 +139,15 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of users who have the role of "Employee".
             // Then print the user's email as well as the product's name, price, and quantity to the console.
+            var rollOfUser = _context.UserRoles.Include(ru => ru.User).Include(ru => ru.Role).Where(ru => ru.Role.RoleName == "Employee").Select(ru => ru.UserId);
 
+            var itemCart = _context.ShoppingCarts.Include(emcarts => emcarts.Product).Include(emcarts => emcarts.User).Where(emcart => rollOfUser.Contains(emcart.UserId));
+
+            foreach (var item in itemCart)
+            {
+
+                Console.WriteLine($"Email:{item.User.Email} bought: {item.Quantity} {item.Product.Name} for {item.Product.Price} each.");
+            }
         }
 
         // <><><><><><><><> CUD (Create, Update, Delete) Actions <><><><><><><><><>
@@ -161,8 +169,18 @@ namespace DatabaseFirstLINQ
         private void ProblemTwelve()
         {
             // Create a new Product object and add that product to the Products table using LINQ.
+            {
+                Name = "Flux Capacitor",
+                Description = "Helps you travel through time, or something like that.",
+                Price = 88
+            };
+
+            _context.Products.Add(newProduct);
+            _context.SaveChanges();
+            Console.WriteLine(newProduct.Name);
 
         }
+    }
 
         private void ProblemThirteen()
         {
@@ -180,8 +198,11 @@ namespace DatabaseFirstLINQ
 
         private void ProblemFourteen()
         {
-            // Add the product you create to the user we created in the ShoppingCart junction table using LINQ.
+        // Add the product you create to the user we created in the ShoppingCart junction table using LINQ.
+        var userCart = _context.ShoppingCarts.Where(uc => uc.User.Email == "david@gmail.com");
+        var newProduct = _context.Products.Where(np => np.Name == "Flux Capacitor");
 
+    
         }
 
         // <><> U Actions (Update) <><>
@@ -197,9 +218,13 @@ namespace DatabaseFirstLINQ
 
         private void ProblemSixteen()
         {
-            // Update the price of the product you created to something different using LINQ.
-
-        }
+        // Update the price of the product you created to something different using LINQ.
+        var Product = _context.Products.Where(pu => pu.Price == 654).FirstOrDefault;
+        Product.Price = 654;
+        _context.Products.Update(Product);
+        _context.SaveChanges();
+        Console.WriteLine(Product.Name);        
+        Console.WriteLine(Product.Price);
 
         private void ProblemSeventeen()
         {
