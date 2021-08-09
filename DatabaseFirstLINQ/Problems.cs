@@ -84,14 +84,22 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that gets all of the users who registered BEFORE 2016
             // Then print each user's email and registration date to the console.
-
+            var userRegistrationDate = _context.Users.Where(user => user.RegistrationDate >= new DateTime(2015, 12, 31, 0, 0, 0));
+            foreach (var user in userRegistrationDate)
+            {
+                Console.WriteLine(user.Email + "," + " " + user.RegistrationDate);
+            }
         }
 
         private void ProblemSix()
         {
             // Write a LINQ query that gets all of the users who registered AFTER 2016 and BEFORE 2018
             // Then print each user's email and registration date to the console.
-
+            var usersBetweenDates = _context.Users.Where(x => x.RegistrationDate >= new DateTime(2016, 01, 01, 0, 0, 0) && x.RegistrationDate < new DateTime(2018, 01, 01, 0, 0, 0));
+            foreach (var user in usersBetweenDates)
+            {
+                Console.WriteLine(user.Email + "," + " " + user.RegistrationDate);
+            }
         }
 
         // <><><><><><><><> R Actions (Read) with Foreign Keys <><><><><><><><><>
@@ -111,7 +119,11 @@ namespace DatabaseFirstLINQ
         {
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "afton@gmail.com".
             // Then print the product's name, price, and quantity to the console.
-
+            var cartItems = _context.ShoppingCarts.Include(ci => ci.User).Include(ci => ci.Product).Where(ci => ci.User.Email == "afton@gmail.com");
+            foreach (var item in cartItems)
+            {
+                Console.WriteLine($"product name: {item.Product.Name} price:{item.Product.Price} quantity:{item.Quantity}");
+            }
         }
 
         private void ProblemNine()
@@ -119,7 +131,8 @@ namespace DatabaseFirstLINQ
             // Write a LINQ query that retreives all of the products in the shopping cart of the user who has the email "oda@gmail.com" and returns the sum of all of the products prices.
             // HINT: End of query will be: .Select(sc => sc.Product.Price).Sum();
             // Then print the total of the shopping cart to the console.
-
+            var cartItems = _context.ShoppingCarts.Include(ci => ci.User).Include(ci => ci.Product).Where(ci => ci.User.Email == "oda@gmail.com").Select(ci => ci.Product.Price).Sum();
+            Console.WriteLine("$" + cartItems);
         }
 
         private void ProblemTen()
