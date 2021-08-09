@@ -169,6 +169,7 @@ namespace DatabaseFirstLINQ
         private void ProblemTwelve()
         {
             // Create a new Product object and add that product to the Products table using LINQ.
+            Product newProduct = new Product()
             {
                 Name = "Flux Capacitor",
                 Description = "Helps you travel through time, or something like that.",
@@ -247,6 +248,9 @@ namespace DatabaseFirstLINQ
         private void ProblemEighteen()
         {
             // Delete the role relationship from the user who has the email "oda@gmail.com" using LINQ.
+            var roleRelation = _context.UserRoles.Where(Uri => Uri.User.Email == "oda@gmail.com").FirstOrDefault();
+            _context.UserRoles.Remove(roleRelation);
+            _context.SaveChanges();
 
         }
 
